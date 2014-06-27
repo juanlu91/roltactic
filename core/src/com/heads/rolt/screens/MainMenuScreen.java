@@ -54,6 +54,7 @@ public class MainMenuScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				btn_ranking.setText("Go to Ranking");
+				g.setScreen(g.rankingScreen);
 			}
 		});
 		
@@ -75,7 +76,7 @@ public class MainMenuScreen implements Screen {
 		btn_quit.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				btn_quit.setText("Quit game");
+				Gdx.app.exit();
 			}
 		});
 
