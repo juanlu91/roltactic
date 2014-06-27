@@ -14,7 +14,6 @@ public class MyGame extends Game {
 		mainMenuScreen = new MainMenuScreen(this);
 		teamScreen = new TeamScreen(this);
 		setScreen(mainMenuScreen);
-		System.out.println("hola");
 	}
 	
 }
