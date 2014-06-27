@@ -1,6 +1,9 @@
 package com.heads.rolt.screens;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
@@ -28,6 +31,7 @@ public class TeamScreen implements Screen {
 	private Map<Integer, TextButton> map_rmv_pjs;
 	private Sprite img_pj1, img_pj2, img_pj3, img_pj4;
 	private Integer team_index, pjs_selected;
+	private List<Integer> list_pjs_deleted;
 
 	public TeamScreen(MyGame g) {
 		this.g = g;
@@ -42,7 +46,9 @@ public class TeamScreen implements Screen {
 		map_rmv_pjs = new HashMap<Integer, TextButton>();
 		team_index = 0;
 		pjs_selected = 0;
-
+		list_pjs_deleted = new ArrayList<Integer>();
+		
+		
 		Label lbl_username = new Label("Username", skin, "default");
 		lbl_username.setAlignment(Align.center);
 		lbl_username.setPosition(550, 425);
@@ -60,11 +66,21 @@ public class TeamScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				// btn_warrior.setText("Warrior added!");
 				if (pjs_selected < 4) {
-					map_img_pjs.get(team_index).setTexture(
-							new Texture(Gdx.files.internal("img/warrior.png")));
-					map_rmv_pjs.get(team_index).setVisible(true);
-					team_index++;
-					pjs_selected++;
+					if(list_pjs_deleted.isEmpty()) {
+						map_img_pjs.get(team_index).setTexture(
+								new Texture(Gdx.files.internal("img/warrior.png")));
+						map_rmv_pjs.get(team_index).setVisible(true);
+						team_index++;
+						pjs_selected++;
+					}
+					else {
+						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
+								new Texture(Gdx.files.internal("img/warrior.png")));
+						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
+						team_index++;
+						pjs_selected++;
+						list_pjs_deleted.remove(0);
+					}
 				}
 			}
 		});
@@ -77,11 +93,21 @@ public class TeamScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (pjs_selected < 4) {
-					map_img_pjs.get(team_index).setTexture(
-							new Texture(Gdx.files.internal("img/archer.png")));
-					map_rmv_pjs.get(team_index).setVisible(true);
-					team_index++;
-					pjs_selected++;
+					if(list_pjs_deleted.isEmpty()) {
+						map_img_pjs.get(team_index).setTexture(
+								new Texture(Gdx.files.internal("img/archer.png")));
+						map_rmv_pjs.get(team_index).setVisible(true);
+						team_index++;
+						pjs_selected++;
+					}
+					else {
+						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
+								new Texture(Gdx.files.internal("img/archer.png")));
+						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
+						team_index++;
+						pjs_selected++;
+						list_pjs_deleted.remove(0);
+					}
 				}
 			}
 		});
@@ -94,11 +120,21 @@ public class TeamScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (pjs_selected < 4) {
-					map_img_pjs.get(team_index).setTexture(
-							new Texture(Gdx.files.internal("img/mage.png")));
-					map_rmv_pjs.get(team_index).setVisible(true);
-					team_index++;
-					pjs_selected++;
+					if(list_pjs_deleted.isEmpty()) {
+						map_img_pjs.get(team_index).setTexture(
+								new Texture(Gdx.files.internal("img/mage.png")));
+						map_rmv_pjs.get(team_index).setVisible(true);
+						team_index++;
+						pjs_selected++;
+					}
+					else {
+						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
+								new Texture(Gdx.files.internal("img/mage.png")));
+						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
+						team_index++;
+						pjs_selected++;
+						list_pjs_deleted.remove(0);
+					}
 				}
 			}
 		});
@@ -111,11 +147,21 @@ public class TeamScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (pjs_selected < 4) {
-					map_img_pjs.get(team_index).setTexture(
-							new Texture(Gdx.files.internal("img/shaman.png")));
-					map_rmv_pjs.get(team_index).setVisible(true);
-					team_index++;
-					pjs_selected++;
+					if(list_pjs_deleted.isEmpty()) {
+						map_img_pjs.get(team_index).setTexture(
+								new Texture(Gdx.files.internal("img/shaman.png")));
+						map_rmv_pjs.get(team_index).setVisible(true);
+						team_index++;
+						pjs_selected++;
+					}
+					else {
+						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
+								new Texture(Gdx.files.internal("img/shaman.png")));
+						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
+						team_index++;
+						pjs_selected++;
+						list_pjs_deleted.remove(0);
+					}
 				}
 			}
 		});
@@ -143,9 +189,9 @@ public class TeamScreen implements Screen {
 					map_img_pjs.get(k).setTexture(
 							new Texture(Gdx.files.internal("img/no_pj.png")));
 					btn_rmv_pj.setVisible(false);
-					if (k < team_index)
-						team_index = k;
 					pjs_selected--;
+					list_pjs_deleted.add(k);
+					Collections.sort(list_pjs_deleted);
 				}
 			});
 			btn_rmv_pj.setVisible(false);
