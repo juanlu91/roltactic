@@ -1,6 +1,12 @@
 package com.heads.rolt.screens;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
@@ -26,12 +32,12 @@ public class WaitingScreen implements Screen {
 		this.g = g;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void show() {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		stage = new Stage();
 		batch = new SpriteBatch();
-		socket = Gdx.net.newClientSocket(Protocol.TCP, "localhost", 8882, null);
 
 		Label lbl_username = new Label("Username", skin, "default");
 		lbl_username.setAlignment(Align.center);
@@ -53,28 +59,38 @@ public class WaitingScreen implements Screen {
 
 		Gdx.input.setInputProcessor(stage);
 
+		// Connections Thread - Controller.java
+
 		SocketHints socketHints = new SocketHints();
 		// Socket will time our in 4 seconds
 		socketHints.connectTimeout = 4000;
-		Socket socket = Gdx.net.newClientSocket(Protocol.TCP, "localhost",
-				8882, socketHints);
-		try {
-			socket.getOutputStream().write("".getBytes());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Connections Thread
-
-		Thread t = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-
+		socket = Gdx.net.newClientSocket(Protocol.TCP, "192.168.56.1", 8882,
+				socketHints);
+		if (socket.isConnected()) {
+			try {
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						socket.getInputStream()));
+				System.out.println("echo: " + in.readLine());
+				
+				socket.getOutputStream().write("gameList".getBytes());
+				JSONObject json = new JSONObject(in.readLine());
+				System.out.println("echo: " + json.getJSONArray("data"));
+				
+				if(json.getJSONArray("data").length() == 0){
+					JSONObject data = new JSONObject();
+					data.put("type", "newGame");
+					data.put("data", "newGame");
+					socket.getOutputStream().write("newGame".getBytes());
+				}else{
+					socket.getOutputStream().write("loadGame".getBytes());
+				}				
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch(JSONException e){
+				e.printStackTrace();
 			}
-
-		});
-
+		}
 	}
 
 	@Override

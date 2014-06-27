@@ -142,6 +142,7 @@ public class TeamScreen implements Screen {
 				public void clicked(InputEvent event, float x, float y) {
 					map_img_pjs.get(k).setTexture(
 							new Texture(Gdx.files.internal("img/no_pj.png")));
+					
 					btn_rmv_pj.setVisible(false);
 					if (k < team_index)
 						team_index = k;
@@ -163,6 +164,7 @@ public class TeamScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				btn_play.setText("Select Team");
+				g.setScreen(g.waitingScreen);
 			}
 		});
 		btn_play.setDisabled(true);
