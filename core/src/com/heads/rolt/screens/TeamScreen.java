@@ -209,8 +209,8 @@ public class TeamScreen implements Screen {
 		btn_play.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				btn_play.setText("Select Team");
-				g.setScreen(g.waitingScreen);
+				if(!btn_play.isDisabled())
+					g.setScreen(g.waitingScreen);
 			}
 		});
 		btn_play.setDisabled(true);
