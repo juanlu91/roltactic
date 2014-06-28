@@ -1,4 +1,4 @@
-roltactic
+Rol Tactics
 =========
 
 Juego de rol para dispositivos moviles.
