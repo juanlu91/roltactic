@@ -68,14 +68,15 @@ public class TeamScreen implements Screen {
 				if (pjs_selected < 4) {
 					if(list_pjs_deleted.isEmpty()) {
 						map_img_pjs.get(team_index).setTexture(
-								new Texture(Gdx.files.internal("img/warrior.png")));
+								new Texture(Gdx.files.internal("img/characters/warrior.png")));
 						map_rmv_pjs.get(team_index).setVisible(true);
 						team_index++;
 						pjs_selected++;
 					}
 					else {
 						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
-								new Texture(Gdx.files.internal("img/warrior.png")));
+								new Texture(Gdx.files.internal("img/characters/warrior.png")));
+						map_img_pjs.get(list_pjs_deleted.get(0)).setSize(80f, 102f);
 						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
 						team_index++;
 						pjs_selected++;
@@ -95,14 +96,14 @@ public class TeamScreen implements Screen {
 				if (pjs_selected < 4) {
 					if(list_pjs_deleted.isEmpty()) {
 						map_img_pjs.get(team_index).setTexture(
-								new Texture(Gdx.files.internal("img/archer.png")));
+								new Texture(Gdx.files.internal("img/characters/archer.png")));
 						map_rmv_pjs.get(team_index).setVisible(true);
 						team_index++;
 						pjs_selected++;
 					}
 					else {
 						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
-								new Texture(Gdx.files.internal("img/archer.png")));
+								new Texture(Gdx.files.internal("img/characters/archer.png")));
 						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
 						team_index++;
 						pjs_selected++;
@@ -122,14 +123,14 @@ public class TeamScreen implements Screen {
 				if (pjs_selected < 4) {
 					if(list_pjs_deleted.isEmpty()) {
 						map_img_pjs.get(team_index).setTexture(
-								new Texture(Gdx.files.internal("img/mage.png")));
+								new Texture(Gdx.files.internal("img/characters/mage.png")));
 						map_rmv_pjs.get(team_index).setVisible(true);
 						team_index++;
 						pjs_selected++;
 					}
 					else {
 						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
-								new Texture(Gdx.files.internal("img/mage.png")));
+								new Texture(Gdx.files.internal("img/characters/mage.png")));
 						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
 						team_index++;
 						pjs_selected++;
@@ -149,14 +150,14 @@ public class TeamScreen implements Screen {
 				if (pjs_selected < 4) {
 					if(list_pjs_deleted.isEmpty()) {
 						map_img_pjs.get(team_index).setTexture(
-								new Texture(Gdx.files.internal("img/shaman.png")));
+								new Texture(Gdx.files.internal("img/characters/shaman.png")));
 						map_rmv_pjs.get(team_index).setVisible(true);
 						team_index++;
 						pjs_selected++;
 					}
 					else {
 						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
-								new Texture(Gdx.files.internal("img/shaman.png")));
+								new Texture(Gdx.files.internal("img/characters/shaman.png")));
 						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
 						team_index++;
 						pjs_selected++;
@@ -166,10 +167,10 @@ public class TeamScreen implements Screen {
 			}
 		});
 
-		img_pj1 = new Sprite(new Texture(Gdx.files.internal("img/no_pj.png")));
-		img_pj2 = new Sprite(new Texture(Gdx.files.internal("img/no_pj.png")));
-		img_pj3 = new Sprite(new Texture(Gdx.files.internal("img/no_pj.png")));
-		img_pj4 = new Sprite(new Texture(Gdx.files.internal("img/no_pj.png")));
+		img_pj1 = new Sprite(new Texture(Gdx.files.internal("img/characters/no_pj.png")));
+		img_pj2 = new Sprite(new Texture(Gdx.files.internal("img/characters/no_pj.png")));
+		img_pj3 = new Sprite(new Texture(Gdx.files.internal("img/characters/no_pj.png")));
+		img_pj4 = new Sprite(new Texture(Gdx.files.internal("img/characters/no_pj.png")));
 
 		map_img_pjs.put(0, img_pj1);
 		map_img_pjs.put(1, img_pj2);
@@ -187,7 +188,7 @@ public class TeamScreen implements Screen {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					map_img_pjs.get(k).setTexture(
-							new Texture(Gdx.files.internal("img/no_pj.png")));
+							new Texture(Gdx.files.internal("img/characters/no_pj.png")));
 					
 					btn_rmv_pj.setVisible(false);
 					pjs_selected--;
