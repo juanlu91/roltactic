@@ -1,6 +1,7 @@
 package com.heads.rolt;
 
 import com.badlogic.gdx.Game;
+import com.heads.rolt.screens.GameWorld;
 import com.heads.rolt.screens.MainMenuScreen;
 import com.heads.rolt.screens.RankingScreen;
 import com.heads.rolt.screens.TeamScreen;
@@ -12,6 +13,7 @@ public class MyGame extends Game {
 	public TeamScreen teamScreen;
 	public WaitingScreen waitingScreen;
 	public RankingScreen rankingScreen;
+	public GameWorld gameWorld;
 	
 	@Override
 	public void create() {
@@ -19,6 +21,7 @@ public class MyGame extends Game {
 		teamScreen = new TeamScreen(this);
 		waitingScreen = new WaitingScreen(this);
 		rankingScreen = new RankingScreen(this);
+		gameWorld = new GameWorld(this);
 		setScreen(mainMenuScreen);
 	}
 	
