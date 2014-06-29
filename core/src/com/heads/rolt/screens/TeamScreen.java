@@ -76,7 +76,6 @@ public class TeamScreen implements Screen {
 					else {
 						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
 								new Texture(Gdx.files.internal("img/characters/warrior.png")));
-						map_img_pjs.get(list_pjs_deleted.get(0)).setSize(80f, 102f);
 						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
 						team_index++;
 						pjs_selected++;
