@@ -11,7 +11,7 @@ public class Player extends Sprite {
 	/** the movement velocity */
 	private Vector2 velocity = new Vector2();
 
-	private float speed = 60 * 2, gravity = 60 * 1.8f;
+	private float speed = 60 * 2;
 
 	private TiledMapTileLayer collisionLayer;
 
@@ -31,7 +31,7 @@ public class Player extends Sprite {
 		float tileWidth = collisionLayer.getTileWidth(), tileHeight = collisionLayer
 				.getTileHeight();
 	}
-
+	
 	public Vector2 getVelocity() {
 		return velocity;
 	}
@@ -46,14 +46,6 @@ public class Player extends Sprite {
 
 	public void setSpeed(float speed) {
 		this.speed = speed;
-	}
-
-	public float getGravity() {
-		return gravity;
-	}
-
-	public void setGravity(float gravity) {
-		this.gravity = gravity;
 	}
 
 	public TiledMapTileLayer getCollisionLayer() {

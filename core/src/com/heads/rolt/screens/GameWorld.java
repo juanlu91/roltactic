@@ -1,7 +1,6 @@
 package com.heads.rolt.screens;
 
 import com.badlogic.gdx.Gdx;
-
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -9,14 +8,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.heads.rolt.MyGame;
 import com.heads.rolt.entities.Player;
-import com.heads.rolt.entities.PlayerTest;
-
 
 public class GameWorld implements Screen, InputProcessor {
 
@@ -26,6 +25,7 @@ public class GameWorld implements Screen, InputProcessor {
 	private OrthographicCamera camera;
 
 	private Player player;
+	private ShapeRenderer sr;
 
 	public GameWorld(MyGame g) {
 		this.g = g;
@@ -36,6 +36,7 @@ public class GameWorld implements Screen, InputProcessor {
 		map = new TmxMapLoader().load("maps/map.tmx");
 
 		renderer = new OrthogonalTiledMapRenderer(map);
+		sr = new ShapeRenderer();
 
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(),
 				Gdx.graphics.getHeight());
@@ -43,24 +44,10 @@ public class GameWorld implements Screen, InputProcessor {
 				Gdx.graphics.getHeight());
 
 		player = new Player(new Sprite(
-				new Texture("img/characters/warrior.png")),
+				new Texture("img/characters/warrior2.png")),
 				(TiledMapTileLayer) map.getLayers().get(0));
-		player.setOriginCenter();
-		float x = 36 * player.getCollisionLayer().getTileWidth();
-		float y = (player.getCollisionLayer().getHeight() - 14)
-				* player.getCollisionLayer().getTileHeight();
-		player.setPosition(x - player.getTexture().getWidth() / 2, y
-				- player.getTexture().getHeight() / 2);
-		
-		System.out.println(player.getX());
-		System.out.println(player.getY());
-		System.out.println(player.getWidth());
-		System.out.println(player.getHeight());
-		System.out.println(player.getOriginX());
-		System.out.println(player.getOriginY());
-		System.out.println(player.getRotation());
-		System.out.println(player.getTexture().getWidth());
-		
+
+		player.setPosition(0.0f, 8.0f);
 
 		Gdx.input.setInputProcessor(this);
 	}
@@ -75,9 +62,16 @@ public class GameWorld implements Screen, InputProcessor {
 		renderer.setView(camera);
 		renderer.render();
 
+		renderer.getSpriteBatch().setProjectionMatrix(camera.combined);
 		renderer.getSpriteBatch().begin();
 		player.draw(renderer.getSpriteBatch(), 1f);
 		renderer.getSpriteBatch().end();
+
+		sr.begin(ShapeType.Line);
+		sr.setColor(1, 1, 0, 1);
+		sr.rect(player.getX(), player.getY(), player.getWidth(),
+				player.getHeight());
+		sr.end();
 	}
 
 	@Override
@@ -117,19 +111,19 @@ public class GameWorld implements Screen, InputProcessor {
 
 		switch (keycode) {
 		case Keys.RIGHT:
-			player.setPosition(player.getX()
-					+ player.getCollisionLayer().getTileWidth(), player.getY());
+			player.setX(player.getX()
+					+ player.getCollisionLayer().getTileWidth());
 			break;
 		case Keys.LEFT:
-			player.setPosition(player.getX()
-					- player.getCollisionLayer().getTileWidth(), player.getY());
+			player.setX(player.getX()
+					- player.getCollisionLayer().getTileWidth());
 			break;
 		case Keys.DOWN:
-			player.setPosition(player.getX(), player.getY()
+			player.setY(player.getY()
 					- player.getCollisionLayer().getTileHeight());
 			break;
 		case Keys.UP:
-			player.setPosition(player.getX(), player.getY()
+			player.setY(player.getY()
 					+ player.getCollisionLayer().getTileHeight());
 			break;
 		}
@@ -162,8 +156,8 @@ public class GameWorld implements Screen, InputProcessor {
 		// posY));
 		// player.setPosition(screenX, screenY);
 
-		System.out.println(String.format("player is in %f %f", player.getX(),
-				player.getY()));
+		System.out.println(String.format("player is in %f %f", player.getX()
+				+ player.getWidth() / 2, player.getY()));
 
 		System.out.println(String.format("click world on: %d, %d", screenX,
 				screenY));
