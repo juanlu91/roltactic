@@ -3,8 +3,12 @@ package com.heads.rolt.screens;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,20 +74,52 @@ public class WaitingScreen implements Screen {
 			try {
 				BufferedReader in = new BufferedReader(new InputStreamReader(
 						socket.getInputStream()));
-				System.out.println("echo: " + in.readLine());
 				
-				socket.getOutputStream().write("gameList".getBytes());
-				JSONObject json = new JSONObject(in.readLine());
-				System.out.println("echo: " + json.getJSONArray("data"));
+				String message = in.readLine();
+				JSONObject json = new JSONObject(message);
+				String cmd = json.getString("type");
 				
-				if(json.getJSONArray("data").length() == 0){
-					JSONObject data = new JSONObject();
-					data.put("type", "newGame");
-					data.put("data", "newGame");
-					socket.getOutputStream().write("newGame".getBytes());
-				}else{
-					socket.getOutputStream().write("loadGame".getBytes());
-				}				
+				if(cmd.equals("info")){
+					String data = json.getString("data");
+					info(data);
+				}
+				
+				JSONObject data = new JSONObject();
+				data.put("command", "gameList");
+				data.put("data", "");
+				socket.getOutputStream().write(data.toString().getBytes());
+				
+				message = in.readLine();
+				json = new JSONObject(message);
+				cmd = json.getString("type");
+				
+				if(cmd.equals("gameList")){
+					JSONArray data_array = json.getJSONArray("data");
+					
+					List<String> pjs = new ArrayList<String>();
+					pjs.add("warrior");
+					
+					if(data_array.length() == 0){
+						data = new JSONObject();
+						data.put("command", "newGame");
+						
+						Date d = Calendar.getInstance().getTime();
+						Long id = d.getTime();
+						
+						JSONObject params = new JSONObject();
+						params.put("id", id.toString());
+						params.put("team", pjs);
+						
+						data.put("data", params);
+						
+						socket.getOutputStream().write(data.toString().getBytes());
+					} else {
+						System.out.println("cargar partida...");
+						data = new JSONObject();
+						data.put("command", "loadGame");					
+						data.put("data", pjs);
+					}				
+				}
 				
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -91,6 +127,10 @@ public class WaitingScreen implements Screen {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void info(String data) {
+		System.out.println(data);
 	}
 
 	@Override
