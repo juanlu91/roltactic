@@ -14,6 +14,8 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.heads.rolt.MyGame;
 import com.heads.rolt.entities.Player;
+import com.heads.rolt.entities.PlayerTest;
+import com.sun.prism.shader.DrawRoundRect_RadialGradient_REPEAT_Loader;
 
 public class GameWorld implements Screen, InputProcessor {
 
@@ -34,14 +36,30 @@ public class GameWorld implements Screen, InputProcessor {
 
 		renderer = new OrthogonalTiledMapRenderer(map);
 
-		camera = new OrthographicCamera();
-		// camera.zoom = 1 / 5f;
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight());
+		camera.setToOrtho(false, Gdx.graphics.getWidth(),
+				Gdx.graphics.getHeight());
 
-		player = new Player(new Sprite(new Texture("img/characters/warrior.png")),
+		player = new Player(new Sprite(
+				new Texture("img/characters/warrior.png")),
 				(TiledMapTileLayer) map.getLayers().get(0));
-		player.setPosition(36 * player.getCollisionLayer().getTileWidth(),
-				(player.getCollisionLayer().getHeight() - 14)
-						* player.getCollisionLayer().getTileHeight());
+		player.setOriginCenter();
+		float x = 36 * player.getCollisionLayer().getTileWidth();
+		float y = (player.getCollisionLayer().getHeight() - 14)
+				* player.getCollisionLayer().getTileHeight();
+		player.setPosition(x - player.getTexture().getWidth() / 2, y
+				- player.getTexture().getHeight() / 2);
+		
+		System.out.println(player.getX());
+		System.out.println(player.getY());
+		System.out.println(player.getWidth());
+		System.out.println(player.getHeight());
+		System.out.println(player.getOriginX());
+		System.out.println(player.getOriginY());
+		System.out.println(player.getRotation());
+		System.out.println(player.getTexture().getWidth());
+		
 
 		Gdx.input.setInputProcessor(this);
 	}
@@ -51,15 +69,13 @@ public class GameWorld implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(189 / 255f, 236 / 255f, 255 / 255f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// camera.position.set(player.getX() + player.getWidth() / 2,
-		// player.getY() + player.getHeight() / 2, 0);
 		camera.update();
 
 		renderer.setView(camera);
 		renderer.render();
 
 		renderer.getSpriteBatch().begin();
-		player.draw(renderer.getSpriteBatch());
+		player.draw(renderer.getSpriteBatch(), 1f);
 		renderer.getSpriteBatch().end();
 	}
 
@@ -67,7 +83,6 @@ public class GameWorld implements Screen, InputProcessor {
 	public void resize(int width, int height) {
 		camera.viewportWidth = width;
 		camera.viewportHeight = height;
-		camera.position.set(width/2f, height/2f, 0);
 		camera.update();
 	}
 
@@ -92,29 +107,32 @@ public class GameWorld implements Screen, InputProcessor {
 	public void dispose() {
 		map.dispose();
 		renderer.dispose();
-		player.getTexture().dispose();
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		System.out
 				.println(String.format("click on: %s", Keys.toString(keycode)));
-		
-		switch(keycode){
+
+		switch (keycode) {
 		case Keys.RIGHT:
-			player.setPosition(player.getX() + player.getCollisionLayer().getTileWidth(), player.getY());
+			player.setPosition(player.getX()
+					+ player.getCollisionLayer().getTileWidth(), player.getY());
 			break;
 		case Keys.LEFT:
-			player.setPosition(player.getX() - player.getCollisionLayer().getTileWidth(), player.getY());
+			player.setPosition(player.getX()
+					- player.getCollisionLayer().getTileWidth(), player.getY());
 			break;
 		case Keys.DOWN:
-			player.setPosition(player.getX(), player.getY() - player.getCollisionLayer().getTileHeight());
+			player.setPosition(player.getX(), player.getY()
+					- player.getCollisionLayer().getTileHeight());
 			break;
 		case Keys.UP:
-			player.setPosition(player.getX(), player.getY() + player.getCollisionLayer().getTileHeight());
+			player.setPosition(player.getX(), player.getY()
+					+ player.getCollisionLayer().getTileHeight());
 			break;
 		}
-		
+
 		return false;
 	}
 
@@ -132,12 +150,22 @@ public class GameWorld implements Screen, InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		
-//		int posX = (int) (screenX / player.getCollisionLayer().getTileWidth());
-//		int posY = (int) (screenY / (player.getCollisionLayer().getTileHeight() + player.getCollisionLayer().getHeight()));
-//		
-//		System.out.println(String.format("click world on: %d, %d", posX, posY));
-//		player.setPosition(screenX, screenY);
+
+		// int posX = (int) (screenX /
+		// player.getCollisionLayer().getTileWidth());
+		// int posY = (int) (screenY /
+		// (player.getCollisionLayer().getTileHeight() +
+		// player.getCollisionLayer().getHeight()));
+		//
+		// System.out.println(String.format("click world on: %d, %d", posX,
+		// posY));
+		// player.setPosition(screenX, screenY);
+
+		System.out.println(String.format("player is in %f %f", player.getX(),
+				player.getY()));
+
+		System.out.println(String.format("click world on: %d, %d", screenX,
+				screenY));
 
 		return true;
 	}

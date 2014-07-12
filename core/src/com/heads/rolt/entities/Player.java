@@ -1,12 +1,10 @@
 package com.heads.rolt.entities;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 
 public class Player extends Sprite {
 
@@ -32,67 +30,6 @@ public class Player extends Sprite {
 
 		float tileWidth = collisionLayer.getTileWidth(), tileHeight = collisionLayer
 				.getTileHeight();
-		boolean collisionX = false, collisionY = false;
-
-		if (velocity.x < 0) {
-			// top-left
-			collisionX = collisionLayer
-					.getCell((int) (getX() / tileWidth),
-							(int) ((getY() + getHeight()) / tileHeight))
-					.getTile().getProperties().containsKey("blocked");
-
-			// middle-left
-			if (!collisionX)
-				collisionX = collisionLayer
-						.getCell((int) (getX() / tileWidth),
-								(int) ((getY() + getHeight() / 2) / tileHeight))
-						.getTile().getProperties().containsKey("blocked");
-
-			// bottom-left
-			if (!collisionX)
-				collisionX = collisionLayer
-						.getCell((int) (getX() / tileWidth),
-								(int) (getY() / tileHeight)).getTile()
-						.getProperties().containsKey("blocked");
-
-		} else if (velocity.x < 0) {
-			// top-right
-			collisionX = collisionLayer
-					.getCell((int) ((getX() + tileWidth) / tileWidth),
-							(int) ((getY() + getHeight()) / tileHeight))
-					.getTile().getProperties().containsKey("blocked");
-
-			// middle-right
-			if (!collisionX)
-				collisionX = collisionLayer
-						.getCell((int) ((getX() + tileWidth) / tileWidth),
-								(int) ((getY() + getHeight() / 2) / tileHeight))
-						.getTile().getProperties().containsKey("blocked");
-
-			// bottom-right
-			if (!collisionX)
-				collisionX = collisionLayer
-						.getCell((int) ((getX() + tileWidth) / tileWidth),
-								(int) (getY() / tileHeight)).getTile()
-						.getProperties().containsKey("blocked");
-		}
-
-		if (!collisionX)
-			// move on x
-			setX(getX() + velocity.x * delta);
-		else
-			velocity.x = 0;
-
-		// move on y
-		setY(getY() + velocity.y * delta);
-
-		if (velocity.x > 0) {
-			// top-left
-
-		} else if (velocity.x < 0) {
-			//
-
-		}
 	}
 
 	public Vector2 getVelocity() {
