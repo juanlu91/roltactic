@@ -210,8 +210,8 @@ public class TeamScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if(!btn_play.isDisabled())
-					g.setScreen(g.gameWorld);
-					//g.setScreen(g.waitingScreen);
+					//g.setScreen(g.gameWorld);
+					g.setScreen(g.waitingScreen);
 			}
 		});
 		btn_play.setDisabled(true);

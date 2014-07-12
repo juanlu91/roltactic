@@ -72,16 +72,20 @@ public class WaitingScreen implements Screen {
 						socket.getInputStream()));
 				System.out.println("echo: " + in.readLine());
 				
-				socket.getOutputStream().write("gameList".getBytes());
+				
+				JSONObject data = new JSONObject();
+				data.put("command", "gameList");
+				data.put("data", "");
+				socket.getOutputStream().write(data.toString().getBytes());
 				JSONObject json = new JSONObject(in.readLine());
 				System.out.println("echo: " + json.getJSONArray("data"));
 				
 				if(json.getJSONArray("data").length() == 0){
-					JSONObject data = new JSONObject();
-					data.put("type", "newGame");
-					data.put("data", "newGame");
-					socket.getOutputStream().write("newGame".getBytes());
-				}else{
+					data = new JSONObject();
+					data.put("command", "newGame");
+					data.put("data", "parametros");
+					socket.getOutputStream().write(data.toString().getBytes());
+				} else {
 					socket.getOutputStream().write("loadGame".getBytes());
 				}				
 				
