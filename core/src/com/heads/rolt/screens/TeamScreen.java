@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -20,21 +21,36 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.heads.rolt.MyGame;
+import com.heads.rolt.entities.MyCharacter;
+import com.heads.rolt.entities.Race;
+import com.heads.rolt.utils.Strategy;
 
 public class TeamScreen implements Screen {
 	private MyGame g;
 	private Skin skin;
 	private Stage stage;
 	private SpriteBatch batch;
-	private TextButton btn_warrior, btn_archer, btn_mage, btn_shaman, btn_play;
+	private TextButton btn_warrior, btn_archer, btn_mage, btn_healer, btn_play;
 	private Map<Integer, Sprite> map_img_pjs;
 	private Map<Integer, TextButton> map_rmv_pjs;
 	private Sprite img_pj1, img_pj2, img_pj3, img_pj4;
-	private Integer team_index, pjs_selected;
+	private Integer pjs_selected;
+	private List<MyCharacter> my_team;
 	private List<Integer> list_pjs_deleted;
+	private MyCharacter warrior, archer, mage, healer;
+	private Strategy strategy;
 
 	public TeamScreen(MyGame g) {
 		this.g = g;
+		warrior = new MyCharacter(Race.WARRIOR, new Sprite(new Texture(
+				"img/characters/warrior.png")), 10, 0, 10, 10, 10);
+		archer = new MyCharacter(Race.ARCHER, new Sprite(new Texture(
+				"img/characters/archer.png")), 10, 0, 10, 10, 10);
+		mage = new MyCharacter(Race.MAGE, new Sprite(new Texture(
+				"img/characters/mage.png")), 10, 0, 10, 10, 10);
+		healer = new MyCharacter(Race.HEALER, new Sprite(new Texture(
+				"img/characters/healer.png")), 10, 0, 10, 10, 10);
+		strategy = Strategy.STRAT_3_1;
 	}
 
 	@Override
@@ -44,11 +60,10 @@ public class TeamScreen implements Screen {
 		batch = new SpriteBatch();
 		map_img_pjs = new HashMap<Integer, Sprite>();
 		map_rmv_pjs = new HashMap<Integer, TextButton>();
-		team_index = 0;
 		pjs_selected = 0;
+		my_team = new ArrayList<MyCharacter>();
 		list_pjs_deleted = new ArrayList<Integer>();
-		
-		
+
 		Label lbl_username = new Label("Username", skin, "default");
 		lbl_username.setAlignment(Align.center);
 		lbl_username.setPosition(550, 425);
@@ -57,30 +72,40 @@ public class TeamScreen implements Screen {
 		lbl_exp.setAlignment(Align.center);
 		lbl_exp.setPosition(700, 425);
 
+		Integer offset = 20;
+
 		btn_warrior = new TextButton("Warrior", skin, "default");
 		btn_warrior.setWidth(100f);
 		btn_warrior.setHeight(50f);
-		btn_warrior.setPosition(160 - btn_warrior.getWidth() / 2, 300);
+		btn_warrior.setPosition(
+				Gdx.graphics.getWidth() / 4 - btn_warrior.getWidth() / 2
+						- offset, 330 - btn_warrior.getHeight() / 2);
 		btn_warrior.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				// btn_warrior.setText("Warrior added!");
 				if (pjs_selected < 4) {
-					if(list_pjs_deleted.isEmpty()) {
-						map_img_pjs.get(team_index).setTexture(
-								new Texture(Gdx.files.internal("img/characters/warrior.png")));
-						map_rmv_pjs.get(team_index).setVisible(true);
-						team_index++;
-						pjs_selected++;
-					}
-					else {
-						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
-								new Texture(Gdx.files.internal("img/characters/warrior.png")));
-						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
-						team_index++;
-						pjs_selected++;
+					if (list_pjs_deleted.isEmpty()) {
+						map_img_pjs
+								.get(my_team.size())
+								.setTexture(
+										new Texture(
+												Gdx.files
+														.internal("img/characters/warrior.png")));
+						map_rmv_pjs.get(my_team.size()).setVisible(true);
+					} else {
+						map_img_pjs
+								.get(list_pjs_deleted.get(0))
+								.setTexture(
+										new Texture(
+												Gdx.files
+														.internal("img/characters/warrior.png")));
+						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(
+								true);
 						list_pjs_deleted.remove(0);
 					}
+					pjs_selected++;
+					my_team.add(warrior);
 				}
 			}
 		});
@@ -88,26 +113,34 @@ public class TeamScreen implements Screen {
 		btn_archer = new TextButton("Archer", skin, "default");
 		btn_archer.setWidth(100f);
 		btn_archer.setHeight(50f);
-		btn_archer.setPosition(320 - btn_warrior.getWidth() / 2, 300);
+		btn_archer.setPosition(
+				Gdx.graphics.getWidth() / 4 - btn_archer.getWidth() / 2
+						- offset, 270 - btn_archer.getHeight() / 2);
 		btn_archer.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (pjs_selected < 4) {
-					if(list_pjs_deleted.isEmpty()) {
-						map_img_pjs.get(team_index).setTexture(
-								new Texture(Gdx.files.internal("img/characters/archer.png")));
-						map_rmv_pjs.get(team_index).setVisible(true);
-						team_index++;
-						pjs_selected++;
-					}
-					else {
-						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
-								new Texture(Gdx.files.internal("img/characters/archer.png")));
-						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
-						team_index++;
-						pjs_selected++;
+					if (list_pjs_deleted.isEmpty()) {
+						map_img_pjs
+								.get(my_team.size())
+								.setTexture(
+										new Texture(
+												Gdx.files
+														.internal("img/characters/archer.png")));
+						map_rmv_pjs.get(my_team.size()).setVisible(true);
+					} else {
+						map_img_pjs
+								.get(list_pjs_deleted.get(0))
+								.setTexture(
+										new Texture(
+												Gdx.files
+														.internal("img/characters/archer.png")));
+						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(
+								true);
 						list_pjs_deleted.remove(0);
 					}
+					pjs_selected++;
+					my_team.add(archer);
 				}
 			}
 		});
@@ -115,61 +148,74 @@ public class TeamScreen implements Screen {
 		btn_mage = new TextButton("Mage", skin, "default");
 		btn_mage.setWidth(100f);
 		btn_mage.setHeight(50f);
-		btn_mage.setPosition(480 - btn_warrior.getWidth() / 2, 300);
+		btn_mage.setPosition(Gdx.graphics.getWidth() / 4 - btn_mage.getWidth()
+				/ 2 - offset, 210 - btn_mage.getHeight() / 2);
 		btn_mage.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (pjs_selected < 4) {
-					if(list_pjs_deleted.isEmpty()) {
-						map_img_pjs.get(team_index).setTexture(
-								new Texture(Gdx.files.internal("img/characters/mage.png")));
-						map_rmv_pjs.get(team_index).setVisible(true);
-						team_index++;
-						pjs_selected++;
-					}
-					else {
+					if (list_pjs_deleted.isEmpty()) {
+						map_img_pjs.get(my_team.size()).setTexture(
+								new Texture(Gdx.files
+										.internal("img/characters/mage.png")));
+						map_rmv_pjs.get(my_team.size()).setVisible(true);
+					} else {
 						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
-								new Texture(Gdx.files.internal("img/characters/mage.png")));
-						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
-						team_index++;
-						pjs_selected++;
+								new Texture(Gdx.files
+										.internal("img/characters/mage.png")));
+						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(
+								true);
 						list_pjs_deleted.remove(0);
 					}
+					pjs_selected++;
+					my_team.add(mage);
 				}
 			}
 		});
 
-		btn_shaman = new TextButton("Shaman", skin, "default");
-		btn_shaman.setWidth(100f);
-		btn_shaman.setHeight(50f);
-		btn_shaman.setPosition(640 - btn_warrior.getWidth() / 2, 300);
-		btn_shaman.addListener(new ClickListener() {
+		btn_healer = new TextButton("Healer", skin, "default");
+		btn_healer.setWidth(100f);
+		btn_healer.setHeight(50f);
+		btn_healer.setPosition(
+				Gdx.graphics.getWidth() / 4 - btn_healer.getWidth() / 2
+						- offset, 150 - btn_healer.getHeight() / 2);
+		btn_healer.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				if (pjs_selected < 4) {
-					if(list_pjs_deleted.isEmpty()) {
-						map_img_pjs.get(team_index).setTexture(
-								new Texture(Gdx.files.internal("img/characters/shaman.png")));
-						map_rmv_pjs.get(team_index).setVisible(true);
-						team_index++;
-						pjs_selected++;
-					}
-					else {
-						map_img_pjs.get(list_pjs_deleted.get(0)).setTexture(
-								new Texture(Gdx.files.internal("img/characters/shaman.png")));
-						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(true);
-						team_index++;
-						pjs_selected++;
+					if (list_pjs_deleted.isEmpty()) {
+						map_img_pjs
+								.get(my_team.size())
+								.setTexture(
+										new Texture(
+												Gdx.files
+														.internal("img/characters/healer.png")));
+						map_rmv_pjs.get(my_team.size()).setVisible(true);
+					} else {
+						map_img_pjs
+								.get(list_pjs_deleted.get(0))
+								.setTexture(
+										new Texture(
+												Gdx.files
+														.internal("img/characters/healer.png")));
+						map_rmv_pjs.get(list_pjs_deleted.get(0)).setVisible(
+								true);
 						list_pjs_deleted.remove(0);
 					}
+					pjs_selected++;
+					my_team.add(healer);
 				}
 			}
 		});
 
-		img_pj1 = new Sprite(new Texture(Gdx.files.internal("img/characters/no_pj.png")));
-		img_pj2 = new Sprite(new Texture(Gdx.files.internal("img/characters/no_pj.png")));
-		img_pj3 = new Sprite(new Texture(Gdx.files.internal("img/characters/no_pj.png")));
-		img_pj4 = new Sprite(new Texture(Gdx.files.internal("img/characters/no_pj.png")));
+		img_pj1 = new Sprite(new Texture(
+				Gdx.files.internal("img/characters/no_pj.png")));
+		img_pj2 = new Sprite(new Texture(
+				Gdx.files.internal("img/characters/no_pj.png")));
+		img_pj3 = new Sprite(new Texture(
+				Gdx.files.internal("img/characters/no_pj.png")));
+		img_pj4 = new Sprite(new Texture(
+				Gdx.files.internal("img/characters/no_pj.png")));
 
 		map_img_pjs.put(0, img_pj1);
 		map_img_pjs.put(1, img_pj2);
@@ -187,10 +233,12 @@ public class TeamScreen implements Screen {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
 					map_img_pjs.get(k).setTexture(
-							new Texture(Gdx.files.internal("img/characters/no_pj.png")));
-					
+							new Texture(Gdx.files
+									.internal("img/characters/no_pj.png")));
+
 					btn_rmv_pj.setVisible(false);
 					pjs_selected--;
+					my_team.remove(k);
 					list_pjs_deleted.add(k);
 					Collections.sort(list_pjs_deleted);
 				}
@@ -198,31 +246,53 @@ public class TeamScreen implements Screen {
 			btn_rmv_pj.setVisible(false);
 			map_rmv_pjs.put(i, btn_rmv_pj);
 		}
-		
-		Integer offset = 20;
-		
+
+		TextButton btn_strategy_right = new TextButton(">", skin, "default");
+		btn_strategy_right.setWidth(60f);
+		btn_strategy_right.setHeight(30f);
+		btn_strategy_right.setPosition(Gdx.graphics.getWidth() / 2 + 5, 90);
+		btn_strategy_right.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+
+			}
+		});
+
+		TextButton btn_strategy_left = new TextButton("<", skin, "default");
+		btn_strategy_left.setWidth(60f);
+		btn_strategy_left.setHeight(30f);
+		btn_strategy_left.setPosition(Gdx.graphics.getWidth() / 2
+				- btn_strategy_left.getWidth() - 5, 90);
+		btn_strategy_left.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+
+			}
+		});
+
 		btn_play = new TextButton("Play", skin, "default");
 		btn_play.setWidth(100f);
 		btn_play.setHeight(50f);
-		btn_play.setPosition(
-				Gdx.graphics.getWidth()/2 + offset, 50);
+		btn_play.setPosition(Gdx.graphics.getWidth() / 2 + 20, 25);
 		btn_play.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				if(!btn_play.isDisabled())
-					//g.setScreen(g.gameWorld);
+				if (!btn_play.isDisabled()) {
+					// g.setScreen(g.gameWorld);
+					g.waitingScreen.setTeam(my_team);
+					g.gameWorld.setTeam(my_team);
 					g.setScreen(g.waitingScreen);
+				}
 			}
 		});
 		btn_play.setDisabled(true);
 		btn_play.setColor(0f, 0f, 0f, 0.25f);
-		
 
 		final TextButton btn_back = new TextButton("Back", skin, "default");
 		btn_back.setWidth(100f);
 		btn_back.setHeight(50f);
-		btn_back.setPosition(
-				Gdx.graphics.getWidth()/2 - btn_back.getWidth() - offset, 50);
+		btn_back.setPosition(Gdx.graphics.getWidth() / 2 - btn_back.getWidth()
+				- 20, 25);
 		btn_back.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -237,10 +307,13 @@ public class TeamScreen implements Screen {
 		stage.addActor(btn_warrior);
 		stage.addActor(btn_archer);
 		stage.addActor(btn_mage);
-		stage.addActor(btn_shaman);
+		stage.addActor(btn_healer);
 
 		for (TextButton b : map_rmv_pjs.values())
 			stage.addActor(b);
+
+		stage.addActor(btn_strategy_left);
+		stage.addActor(btn_strategy_right);
 
 		stage.addActor(btn_play);
 		stage.addActor(btn_back);
@@ -253,21 +326,39 @@ public class TeamScreen implements Screen {
 		Gdx.gl.glClearColor(189 / 255f, 236 / 255f, 255 / 255f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		Vector2 pos = new Vector2();
+
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		batch.begin();
 		stage.draw();
 		batch.end();
+
+		pos = Strategy.getPositionByStrategy(0, strategy, img_pj1.getWidth(),
+				img_pj1.getHeight());
+
 		batch.begin();
-		batch.draw(img_pj1, 160 - img_pj1.getWidth() / 2, 175);
+		batch.draw(img_pj1, pos.x, pos.y);
 		batch.end();
+
+		pos = Strategy.getPositionByStrategy(1, strategy, img_pj2.getWidth(),
+				img_pj2.getHeight());
+
 		batch.begin();
-		batch.draw(img_pj2, 320 - img_pj2.getWidth() / 2, 175);
+		batch.draw(img_pj2, pos.x, pos.y);
 		batch.end();
+
+		pos = Strategy.getPositionByStrategy(2, strategy, img_pj3.getWidth(),
+				img_pj3.getHeight());
+
 		batch.begin();
-		batch.draw(img_pj3, 480 - img_pj3.getWidth() / 2, 175);
+		batch.draw(img_pj3, pos.x, pos.y);
 		batch.end();
+
+		pos = Strategy.getPositionByStrategy(3, strategy, img_pj4.getWidth(),
+				img_pj4.getHeight());
+
 		batch.begin();
-		batch.draw(img_pj4, 640 - img_pj4.getWidth() / 2, 175);
+		batch.draw(img_pj4, pos.x, pos.y);
 		batch.end();
 
 		if (pjs_selected == 4) {
@@ -280,15 +371,15 @@ public class TeamScreen implements Screen {
 			btn_mage.setDisabled(true);
 			btn_mage.setColor(0f, 0f, 0f, 0.25f);
 
-			btn_shaman.setDisabled(true);
-			btn_shaman.setColor(0f, 0f, 0f, 0.25f);
-			
+			btn_healer.setDisabled(true);
+			btn_healer.setColor(0f, 0f, 0f, 0.25f);
+
 			btn_play.setDisabled(false);
 			btn_play.setColor(1f, 1f, 1f, 1f);
 		} else {
 			btn_play.setDisabled(true);
 			btn_play.setColor(0f, 0f, 0f, 0.25f);
-			
+
 			btn_warrior.setDisabled(false);
 			btn_warrior.setColor(1f, 1f, 1f, 1f);
 
@@ -298,8 +389,8 @@ public class TeamScreen implements Screen {
 			btn_mage.setDisabled(false);
 			btn_mage.setColor(1f, 1f, 1f, 1f);
 
-			btn_shaman.setDisabled(false);
-			btn_shaman.setColor(1f, 1f, 1f, 1f);
+			btn_healer.setDisabled(false);
+			btn_healer.setColor(1f, 1f, 1f, 1f);
 		}
 	}
 
